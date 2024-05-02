@@ -1,10 +1,13 @@
 <template>
-  <div class="app">
-    <div class="content">
-      <AppInfo />
-    </div>
-    <div class="search-panel">
-      
+  <div class="app font-monospace">
+      <div class="content">
+        <AppInfo />
+        <div class="search-panel shadow">
+          <SearchPanel/>
+          <AppFilter/>
+      </div>
+      <MoveList/>
+      <MovieAddForm/>
     </div>
   </div>
  
@@ -12,9 +15,17 @@
 
 <script>
 import  AppInfo from '@/components/app-info/AppInfo.vue'
+import SearchPanel from '@/components/search-panel/SearchPanel.vue'
+import AppFilter from '@/components/app-filter/AppFilter.vue'
+import MoveList from '@/components/movie-list/MovieList.vue'
+import MovieAddForm from '@/components/movie-add-form/MovieAddForm.vue'
   export default {
     components: {
       AppInfo,
+      SearchPanel,
+      AppFilter,
+      MoveList,
+      MovieAddForm,
     }
   }
 </script>
