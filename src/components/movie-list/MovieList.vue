@@ -1,6 +1,8 @@
 <template >
     <ul class="movie-list list-group shadow">
-        <MovieListItem v-for="movie in movies" :movie="movie" :key="movie.id" @onToggle="$emit('onToggle', $event)"/>
+        <MovieListItem v-for="movie in movies" :movie="movie" :key="movie.id"
+         @onToggle="$emit('onToggle', $event)"
+         @onRemove="$emit('onRemove', $event)"/>
     </ul>
 </template>
 <script>
