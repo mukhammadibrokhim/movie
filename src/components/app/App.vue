@@ -4,10 +4,15 @@
         <AppInfo  :allMoviesCount="movies.length" :favouriteMvoiesCount="movies.filter(c => c.favourite).length"/>
         <div class="search-panel shadow">
           <SearchPanel :updateTermHandler="updateTermHandler" />
-          <AppFilter/>
+          <AppFilter :updateFilterHandler="updateFilterHandler" :filterName="filter"/>
       </div>
-      <MoveList :movies="onSearchHandler(movies, term)" @onToggle="onToggleHandler" @onRemove="onRemoveHandler"/>
+      <MoveList 
+      :movies="onFilterHandler(onSearchHandler(movies, term), filter)"
+      @onToggle="onToggleHandler"
+      @onRemove="onRemoveHandler"/>
+      
       <MovieAddForm  @createMovie="createMovie"/>
+    
     </div>
   </div>
  
@@ -54,6 +59,7 @@ import MovieAddForm from '@/components/movie-add-form/MovieAddForm.vue'
                 
             ],
             term: '',
+            filter: '',
         }
     },
 
@@ -80,11 +86,22 @@ import MovieAddForm from '@/components/movie-add-form/MovieAddForm.vue'
         }
         return arr.filter(c => c.name.toLowerCase().indexOf(term) > -1)
       },
-
+      onFilterHandler(arr,filter){
+        switch (filter) {
+          case 'popular':
+            return arr.filter(c => c.like);
+          case 'mostViews':
+            return arr.filter(c=> c.viewers > 500)
+          default:
+            return arr;
+        }
+      },
       updateTermHandler(term){
         this.term = term
       },
-      
+      updateFilterHandler(filter){
+        this.filter = filter
+      }
     },
 
   }
