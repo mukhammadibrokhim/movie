@@ -1,13 +1,13 @@
 <template>
   <div class="app font-monospace">
       <div class="content">
-        <AppInfo />
+        <AppInfo  :allMoviesCount="movies.length" :favouriteMvoiesCount="movies.filter(c => c.favourite).length"/>
         <div class="search-panel shadow">
           <SearchPanel/>
           <AppFilter/>
       </div>
-      <MoveList/>
-      <MovieAddForm/>
+      <MoveList :movies="movies" @onToggle="onToggleHandler"/>
+      <MovieAddForm  @createMovie="createMovie"/>
     </div>
   </div>
  
@@ -26,7 +26,52 @@ import MovieAddForm from '@/components/movie-add-form/MovieAddForm.vue'
       AppFilter,
       MoveList,
       MovieAddForm,
-    }
+    },
+    data() {
+        return {
+            movies: [
+                {
+                    id:1,
+                    name: 'Omar', 
+                    viewers: 811,
+                    favourite: false,
+                    like: true
+                },
+                {
+                    id:2, 
+                    name: 'Empire of Osman', 
+                    viewers: 711,
+                    favourite: true,
+                    like: false
+                },
+                {
+                    id:3,
+                    name: 'Ertugrul', 
+                    viewers: 411,
+                    favourite: false,
+                    like: false
+                }
+                
+            ]
+        }
+    },
+
+    methods: {
+      createMovie(item){
+        this.movies.push(item)
+      },
+
+      onToggleHandler({id,prop}){
+        this.movies = this.movies.map(item => {
+          if(item.id == id){
+            return {... item, [prop]: !item[prop]}
+          }
+          return item
+        })
+      },
+      
+    },
+
   }
 </script>
 

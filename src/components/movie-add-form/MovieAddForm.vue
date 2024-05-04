@@ -1,16 +1,35 @@
 <template lang="">
     <div class="movie-add-form shadow">
         <h3>Yangi kino qo'shish</h3>
-        <form class="add-form d-flex">
-            <input type="text" class="form-control new-movie-label" placeholder="Qanday kino?">
-            <input type="text" class="form-control new-movie-label" placeholder="Necha marotaba korilgan?">
-            <button type="submit" class="btn btn-outline-dark">Qo'shish</button>
+        <form class="add-form d-flex" @submit.prevent>
+            <input type="text" class="form-control new-movie-label" placeholder="Qanday kino?" :value="name" @input="name = $event.target.value">
+            <input type="number" class="form-control new-movie-label" placeholder="Necha marotaba korilgan?" :value="viewers"  @input="viewers = $event.target.value">
+            <button type="submit" class="btn btn-outline-dark" @click="addMovie">Qo'shish</button>
         </form>
     </div>
 </template>
 <script>
 export default {
-    
+    data() {
+        return {
+            name: '',
+            viewers: ''
+        }
+    },
+    methods: {
+        addMovie(){
+            const newMovie = {
+                id: Date.now(),
+                name: this.name, 
+                viewers: this.viewers,
+                favourite: false,
+                like: false
+            }
+            this.$emit("createMovie", newMovie)
+            this.name= ''
+            this.viewers=''
+        },
+    },
 }
 </script>
 <style>

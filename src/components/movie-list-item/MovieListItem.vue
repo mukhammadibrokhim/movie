@@ -1,9 +1,12 @@
 <template >
-    <ul class="list-group-item d-flex justify-content-between">
-        <span class="list-group-item-label">Omar</span>
-        <input type="number" class="list-group-item-input" defaultValue="811">
+    <li class="list-group-item d-flex justify-content-between"
+     :class="[{like: movie.like},{favourite: movie.favourite}]" >
+        
+        <span @click="$emit('onToggle', {id: movie.id, prop: 'like'})" class="list-group-item-label">{{movie.name}}</span>
+        <input type="number" class="list-group-item-input" :value="movie.viewers">
+        
         <div class="d-flex justify-content-center align-items-center">
-            <button type="button" class="btn-cookie btn-sm">
+            <button type="button" class="btn-cookie btn-sm" @click="$emit('onToggle', {id: movie.id, prop: 'favourite'})">
                 <i class="fas fa-cookie"></i>
             </button>
             <button type="button" class="btn-trash btn-sm">
@@ -11,11 +14,22 @@
             </button>
             <i class="fas fa-star"></i>
         </div>
-    </ul>
+    
+    </li>
 </template>
 <script>
 export default {
-    
+    props: {
+        movie : {
+            type: Object,
+            required: true,
+        }
+    },
+    methods: {
+        onLike() {
+            this.$emit("onLike", this.movie.id)
+        }
+    }
 }
 </script>
 <style scoped>
