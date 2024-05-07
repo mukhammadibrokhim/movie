@@ -6,7 +6,14 @@
           <SearchPanel :updateTermHandler="updateTermHandler" />
           <AppFilter :updateFilterHandler="updateFilterHandler" :filterName="filter"/>
       </div>
+      <Box v-if="!movies.length && !isLoading">
+        <p class="text-center fs-3 text-danger">Kinolar yo'q!</p>
+      </Box>
+      <Box v-else-if="isLoading" class=" d-flex justify-content-center">
+        <Loader/>
+      </Box>
       <MoveList 
+      v-else
       :movies="onFilterHandler(onSearchHandler(movies, term), filter)"
       @onToggle="onToggleHandler"
       @onRemove="onRemoveHandler"/>
@@ -24,6 +31,7 @@ import SearchPanel from '@/components/search-panel/SearchPanel.vue'
 import AppFilter from '@/components/app-filter/AppFilter.vue'
 import MoveList from '@/components/movie-list/MovieList.vue'
 import MovieAddForm from '@/components/movie-add-form/MovieAddForm.vue'
+import axios from 'axios'
   export default {
     components: {
       AppInfo,
@@ -34,32 +42,10 @@ import MovieAddForm from '@/components/movie-add-form/MovieAddForm.vue'
     },
     data() {
         return {
-            movies: [
-                {
-                    id:1,
-                    name: 'Omar', 
-                    viewers: 811,
-                    favourite: false,
-                    like: true
-                },
-                {
-                    id:2, 
-                    name: 'Empire of Osman', 
-                    viewers: 711,
-                    favourite: true,
-                    like: false
-                },
-                {
-                    id:3,
-                    name: 'Ertugrul', 
-                    viewers: 411,
-                    favourite: false,
-                    like: false
-                }
-                
-            ],
+            movies: [],
             term: '',
             filter: '',
+            isLoading: false, 
         }
     },
 
@@ -101,9 +87,31 @@ import MovieAddForm from '@/components/movie-add-form/MovieAddForm.vue'
       },
       updateFilterHandler(filter){
         this.filter = filter
-      }
-    },
+      },
+        async fetchMvoie(){
+          try {
+            this.isLoading = true;
+                const {data} =  await axios.get('https://jsonplaceholder.org/posts?_limit=10')
+              const newArr = data.map(item => ({
+              id: item.id,
+              name: item.title,
+              like: false,
+              favourite: false,
+              viewers: item.id * 10
+              }))
 
+              this.movies = newArr
+          } catch(e){
+            alert(e.message)
+          } finally {
+            this.isLoading = false;
+
+          }
+      },
+    },
+    mounted(){
+      this.fetchMvoie()
+    }
   }
 </script>
 
