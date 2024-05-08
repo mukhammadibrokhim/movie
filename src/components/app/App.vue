@@ -1,7 +1,7 @@
 <template>
   <div class="app font-monospace">
     <div class="content">
-      <AppInfo :allMoviesCount="movies.length" :favouriteMvoiesCount="movies.filter(c => c.favourite).length" />
+      <AppInfo :allMoviesCount="totalElements" :favouriteMvoiesCount="movies.filter(c => c.favourite).length" />
       <div class="search-panel shadow">
         <SearchPanel :updateTermHandler="updateTermHandler" />
         <AppFilter :updateFilterHandler="updateFilterHandler" :filterName="filter" />
@@ -15,13 +15,7 @@
       <MoveList v-else :movies="onFilterHandler(onSearchHandler(movies, term), filter)" @onToggle="onToggleHandler" @onRemove="onRemoveHandler" />
       <!-- pagination -->
       <Box class="d-flex justify-content-center">
-        <nav aria-label="pagination">
-          <ul class="pagination pagination-sm">
-            <li v-for="pageNuber in totalPages" :key="pageNuber" :class="{'active': pageNuber == page}" @click="changePageHandler(pageNuber)">
-              <span class="page-link">{{ pageNuber }}</span>
-            </li>
-          </ul>
-        </nav>
+        <Pagination :totalPages="limit" :currentPage="page" :changePageHandler="changePageHandler" :page="this.page" />
       </Box>
       <!--  -->
       <MovieAddForm @createMovie="createMovie" />
@@ -35,6 +29,7 @@
   import AppFilter from '@/components/app-filter/AppFilter.vue'
   import MoveList from '@/components/movie-list/MovieList.vue'
   import MovieAddForm from '@/components/movie-add-form/MovieAddForm.vue'
+  import Pagination from '@/ui-components/Pagination.vue'
   import axios from 'axios'
   export default {
     components: {
@@ -43,6 +38,7 @@
       AppFilter,
       MoveList,
       MovieAddForm,
+      Pagination,
     },
     data() {
       return {
@@ -53,11 +49,18 @@
         limit: 10,
         page: 1,
         totalPages: 0,
+        totalElements: 0,
       }
     },
     methods: {
-      createMovie(item) {
-        this.movies.push(item)
+      async createMovie(item) {
+        try {
+          const response = await axios.post('https://jsonplaceholder.typicode.com/posts', item)
+          console.log(response)
+          this.movies.push(response.data)
+        } catch (err) {
+          alert(err.message)
+        }
       },
       onToggleHandler({
         id,
@@ -72,7 +75,15 @@
           return item
         })
       },
-      onRemoveHandler(id) {
+      async onRemoveHandler(id) {
+
+        try {
+          const response = await axios.delete(`https://jsonplaceholder.typicode.com/posts/${id}` )
+          console.log("Deleted with id: " + id + "\n response: " + response.headers)
+        }catch (err){
+          alert(err.message)
+        }
+
         this.movies = this.movies.filter(c => c.id !== id)
       },
       onSearchHandler(arr, term) {
@@ -113,25 +124,27 @@
             favourite: false,
             viewers: item.id * 10
           }))
-          this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit);
+          this.totalElements = parseInt(response.headers['x-total-count'])
+          this.totalPages = Math.ceil(this.totalElements / this.limit);
           this.movies = newArr
-          console.log(this.totalPages)
         } catch (e) {
           alert(e.message)
         } finally {
           this.isLoading = false;
         }
       },
-
-      changePageHandler(page){
+      changePageHandler(page) {
         this.page = page
-        this.fetchMvoie()
       },
-
     },
     mounted() {
       this.fetchMvoie()
-    }
+    },
+    watch: {
+      page() {
+        this.fetchMvoie()
+      },
+    },
   }
 </script>
 
