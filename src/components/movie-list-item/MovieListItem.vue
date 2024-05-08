@@ -1,36 +1,32 @@
-<template >
-    <li class="list-group-item d-flex justify-content-between"
-     :class="[{like: movie.like},{favourite: movie.favourite}]" >
-        
+<template>
+    <li class="list-group-item d-flex justify-content-between" :class="[{like: movie.like},{favourite: movie.favourite}]">
         <span @click="$emit('onToggle', {id: movie.id, prop: 'like'})" class="list-group-item-label">{{movie.name}}</span>
         <input type="number" class="list-group-item-input" :value="movie.viewers">
-        
         <div class="d-flex justify-content-center align-items-center">
             <button type="button" class="btn-cookie btn-sm" @click="$emit('onToggle', {id: movie.id, prop: 'favourite'})">
-                <i class="fas fa-cookie"></i>
-            </button>
+                    <i class="fas fa-cookie"></i>
+                </button>
             <button type="button" class="btn-trash btn-sm" @click="$emit('onRemove', movie.id)">
-                <i class="fas fa-trash"></i>
-            </button>
+                    <i class="fas fa-trash"></i>
+                </button>
             <i class="fas fa-star"></i>
         </div>
-    
     </li>
 </template>
 <script>
-export default {
-    props: {
-        movie : {
-            type: Object,
-            required: true,
-        }
-    },
-    methods: {
-        onLike() {
-            this.$emit("onLike", this.movie.id)
+    export default {
+        props: {
+            movie: {
+                type: Object,
+                required: true,
+            }
+        },
+        methods: {
+            onLike() {
+                this.$emit("onLike", this.movie.id)
+            }
         }
     }
-}
 </script>
 <style scoped>
     .list-group-item {
@@ -51,7 +47,6 @@ export default {
         border: 0;
         outline: none;
     }
-
     .list-group-item button {
         width: 35px;
         height: 35px;
@@ -59,10 +54,10 @@ export default {
         font-size: 17px;
         border: none;
     }
-    .list-group-item  .btn-cookie {
+    .list-group-item .btn-cookie {
         color: #e09f3e;
     }
-    .list-group-item  .btn-trash {
+    .list-group-item .btn-trash {
         color: #e5383b;
     }
     .list-group-item .fa-star {
@@ -80,7 +75,6 @@ export default {
         opacity: 1;
         transform: translateX(0);
     }
-
     .list-group-item.favourite .list-group-item-label,
     .list-group-item.favourite .list-group-item-input {
         color: #ffd700;
